@@ -1,15 +1,25 @@
-import { HtmlHTMLAttributes } from 'react';
+import { HtmlHTMLAttributes, useEffect, useState } from 'react';
 import Avatar from '../avatar';
 import { IoIosLogOut } from 'react-icons/io';
 import { cn } from '~/utils/styles';
 import { useWallet } from '~/context/wallet';
+import { ethers } from 'ethers';
 
 type Props = HtmlHTMLAttributes<HTMLDivElement> & {
   caption: string;
 };
 
 const Account = (props: Props) => {
-  const { disconnectWallet } = useWallet();
+  const { disconnectWallet, getBalance } = useWallet();
+  const [balance, setBalance] = useState('0');
+  useEffect(() => {
+    getBalance().then((balance) => {
+      if (balance) {
+        return setBalance(ethers.utils.formatEther(balance));
+      }
+    });
+  }, [getBalance]);
+
   return (
     <div
       {...props}
@@ -19,9 +29,12 @@ const Account = (props: Props) => {
       )}
     >
       <Avatar />
-      <div className='flex flex-col flex-1'>
+      <div className='flex flex-col flex-1 gap-1'>
         <span className='text-lg font-bold'>Ronin</span>
         <span className='text-sm'>{props.caption}</span>
+        {balance && (
+          <span className='text-xs font-light'>Balance: {balance} RON</span>
+        )}
       </div>
       <IoIosLogOut
         className='size-8 p-1 rounded-full border text-red-500  bg-red-100 font-bold'

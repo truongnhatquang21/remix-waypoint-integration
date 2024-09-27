@@ -1,4 +1,4 @@
-import { WaypointProvider } from '@sky-mavis/waypoint'
+import { authorize, WaypointProvider } from '@sky-mavis/waypoint'
 import { ethers } from 'ethers'
 
 
@@ -15,3 +15,10 @@ export const roninWaypointWalletProvider = WaypointProvider.create({
 export const roninWaypointProvider = new ethers.providers.Web3Provider(
   roninWaypointWalletProvider
 )
+
+export const authorizeFn = async ()=>{
+  return authorize({
+    clientId,
+    waypointOrigin,
+  })
+}
